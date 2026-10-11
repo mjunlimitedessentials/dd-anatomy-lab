@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DD Anatomy Lab | Anatomy Virtual Laboratory</title>
+<meta name="description" content="Explore the human body layer by layer in a free, browser-based anatomy lab.">
+<link rel="canonical" href="https://lab.mjunlimitedessentialmktg.com/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="DD Anatomy Lab — Explore the body. Reveal the layers.">
+<meta property="og:description" content="Explore the human body layer by layer in a free, browser-based anatomy lab.">
+<meta property="og:url" content="https://lab.mjunlimitedessentialmktg.com/">
+<meta property="og:image" content="https://public-files.gumroad.com/2j6qr474d4spldq9xek0vr0rg73a">
+<meta name="twitter:card" content="summary_large_image">
+<style>
+  :root{
+    --bg:#f7f5f0; --surface:#ffffff; --surface-2:#efece4; --ink:#16212b; --muted:#56636f;
+    --line:#dcd6ca; --accent:#c8374a; --accent-ink:#ffffff; --teal:#1f7a78; --bone:#e9dfc8;
+    --skin:#e8b796; --muscle:#b8424f; --organ:#d9776b; --vein:#3a6ea5;
+    --radius:18px; --shadow:0 18px 50px -24px rgba(22,33,43,.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#0d1419; --surface:#141e25; --surface-2:#1a262e; --ink:#eef2f4; --muted:#9eadb8;
+      --line:#26343d; --accent:#ff6b7d; --accent-ink:#1a0c0f; --teal:#5cc8c2; --bone:#efe6d2;
+      --shadow:0 18px 50px -24px rgba(0,0,0,.7);
+    }
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
+  body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  .serif{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif}
+  a{color:inherit}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+  .skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;z-index:50}
+  .skip:focus{left:12px}
+  :focus-visible{outline:3px solid var(--teal);outline-offset:3px;border-radius:8px}
+
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 26px;border-radius:999px;border:0;cursor:pointer;font:600 17px/1 inherit;font-family:inherit;text-decoration:none;transition:transform .15s ease, box-shadow .15s ease}
+  .btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 10px 24px -10px var(--accent)}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+  .btn-ghost:hover{border-color:var(--ink)}
+
+  /* Top bar */
+  header.top{position:sticky;top:0;z-index:20;background:var(--bg);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  header.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:12px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:700;letter-spacing:.02em;font-size:15px;text-transform:uppercase}
+  .brand-dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px rgba(200,55,74,.25)}
+  header.top .btn{min-height:42px;padding:0 18px;font-size:15px}
+
+  /* Hero */
+  .hero{padding:64px 0 40px}
+  .hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .eyebrow{display:inline-flex;gap:8px;align-items:center;font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal)}
+  h1{font-size:clamp(38px,6vw,66px);line-height:1.02;margin:14px 0 18px;letter-spacing:-.02em;font-weight:600}
+  h1 em{font-style:italic;color:var(--accent)}
+  .lede{font-size:19px;color:var(--muted);max-width:34ch;margin:0 0 28px}
+  .price-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px}
+  .price-tag{font-weight:700;font-size:15px;color:var(--muted)}
+  .price-tag strong{color:var(--ink);font-size:20px}
+  .trust{display:flex;flex-wrap:wrap;gap:8px 20px;margin:26px 0 0;padding:0;list-style:none;color:var(--muted);font-size:15px}
+  .trust li::before{content:"✓";color:var(--teal);font-weight:800;margin-right:8px}
+
+  .cover{position:relative;border-radius:24px;overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--line);background:var(--surface-2);aspect-ratio:4/3}
+  .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;z-index:2}
+  .cover img.broken{display:none}
+  .cover-fallback{position:absolute;inset:0;z-index:1;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;color:#fff;background:linear-gradient(140deg,#16212b 0%,#2a3f4c 45%,#c8374a 130%);overflow:hidden}
+  .cf-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px);background-size:28px 28px}
+  .cf-ring{position:absolute;border-radius:50%;border:2px solid rgba(255,255,255,.18);right:-40px;top:-40px}
+  .cf-ring.r1{width:220px;height:220px}.cf-ring.r2{width:320px;height:320px;border-color:rgba(232,183,150,.25)}.cf-ring.r3{width:420px;height:420px;border-color:rgba(255,107,125,.2)}
+  .cf-kicker,.cf-title,.cf-sub{position:relative}
+  .cf-kicker{font-size:12px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#5cc8c2}
+  .cf-title{font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;font-size:clamp(34px,5vw,52px);line-height:1;margin:10px 0 12px}
+  .cf-sub{font-size:14px;opacity:.85}
+  .cover .badge{z-index:3;position:absolute;left:16px;bottom:16px;background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:999px;font-size:13px;font-weight:700;box-shadow:var(--shadow)}
+
+  /* Sections */
+  section{padding:72px 0}
+  .sec-head{max-width:640px;margin-bottom:36px}
+  h2{font-size:clamp(30px,4vw,44px);line-height:1.08;margin:10px 0 12px;letter-spacing:-.015em;font-weight:600}
+  .sec-head p{color:var(--muted);margin:0}
+
+  /* Pain points */
+  .pains{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .pain{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:24px}
+  .pain h3{margin:0 0 8px;font-size:19px}
+  .pain p{margin:0;color:var(--muted);font-size:16px}
+  .pain .ic{font-size:22px;width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:var(--surface-2);margin-bottom:14px}
+
+  /* Layer explorer */
+  .explorer{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:28px;display:grid;grid-template-columns:280px 1fr;gap:32px;box-shadow:var(--shadow)}
+  .layers{display:flex;flex-direction:column;gap:10px}
+  .layer-btn{display:flex;align-items:center;gap:12px;width:100%;text-align:left;padding:14px 16px;border-radius:14px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:600 16px/1.2 inherit;font-family:inherit;cursor:pointer;transition:border-color .2s, background .2s}
+  .layer-btn .sw{width:16px;height:16px;border-radius:5px;flex:none}
+  .layer-btn small{display:block;font-weight:400;color:var(--muted);font-size:13px;margin-top:3px}
+  .layer-btn[aria-pressed="true"]{border-color:var(--ink);background:var(--surface-2)}
+  .stage{position:relative;min-height:420px;display:grid;place-items:center;background:radial-gradient(circle at 50% 40%,var(--surface-2),transparent 70%);border-radius:20px}
+  .figure{position:relative;width:min(240px,62%);aspect-ratio:1/2}
+  .figure .lyr{position:absolute;inset:0;width:100%;height:100%;transition:opacity .5s ease, transform .5s ease}
+  .figure .lyr[data-g="skeleton"]{z-index:1}.figure .lyr[data-g="organs"]{z-index:2}.figure .lyr[data-g="muscle"]{z-index:3}.figure .lyr[data-g="skin"]{z-index:4}
+  .figure .lyr.off{opacity:0;transform:translateY(6px)}
+  .sw-skin{background:#e8b796}.sw-muscle{background:#b8424f}.sw-organ{background:#d9776b}.sw-bone{background:#e9dfc8;border:1px solid var(--line)}
+  .wrap-narrow{max-width:780px}
+  .center-cta{text-align:center;margin-top:28px}
+  .stage-note{position:absolute;right:14px;bottom:12px;font-size:12px;color:var(--muted)}
+  .live{min-height:24px;margin-top:10px;font-size:15px;color:var(--muted)}
+
+  /* Steps */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;counter-reset:s}
+  .step{padding:26px;border-radius:var(--radius);background:var(--surface);border:1px solid var(--line);position:relative}
+  .step::before{counter-increment:s;content:counter(s);font-family:Georgia,serif;font-size:44px;line-height:1;color:var(--accent);display:block;margin-bottom:10px}
+  .step h3{margin:0 0 6px;font-size:19px}
+  .step p{margin:0;color:var(--muted);font-size:16px}
+
+  /* Who */
+  .who{display:flex;flex-wrap:wrap;gap:12px}
+  .chip{padding:12px 18px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-weight:600;font-size:16px}
+
+  /* Description */
+  .desc{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:28px;color:var(--ink)}
+  .desc img{max-width:100%;height:auto;border-radius:12px}
+  .rating{display:flex;align-items:center;gap:10px;margin-top:18px;color:var(--muted);font-size:15px}
+  .stars{color:#e0a326;letter-spacing:2px}
+
+  /* FAQ */
+  details{border-bottom:1px solid var(--line);padding:18px 0}
+  summary{cursor:pointer;font-weight:600;font-size:18px;list-style:none;display:flex;justify-content:space-between;gap:16px}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";font-size:24px;line-height:1;color:var(--accent);transition:transform .2s}
+  details[open] summary::after{transform:rotate(45deg)}
+  details p{color:var(--muted);margin:10px 0 0}
+
+  /* Final CTA */
+  .final{background:var(--ink);color:var(--bg);border-radius:32px;padding:56px 32px;text-align:center}
+  .final h2{color:var(--bg)}
+  .final p{color:var(--bg);opacity:.8;max-width:46ch;margin:0 auto 26px}
+  .support{margin-top:30px;padding-top:26px;border-top:1px solid rgba(128,128,128,.35);display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;font-size:15px}
+  .support label{color:var(--bg);opacity:.8}
+  .support input{width:120px;min-height:46px;border-radius:12px;border:1.5px solid rgba(128,128,128,.5);background:transparent;color:var(--bg);padding:0 14px;font:inherit}
+  .support .btn{min-height:46px;background:var(--bg);color:var(--ink)}
+
+  footer{padding:36px 0 110px;color:var(--muted);font-size:14px;text-align:center}
+
+  /* Sticky mobile CTA */
+  .mbar{position:fixed;left:12px;right:12px;bottom:12px;z-index:30;display:none;transform:translateY(140%);transition:transform .3s ease}
+  .mbar.show{transform:none}
+  .mbar .btn{width:100%}
+
+  /* Reveal */
+  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s ease, transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  @media (max-width:900px){
+    .hero .wrap{grid-template-columns:1fr;gap:32px}
+    .hero{padding-top:36px}
+    .pains,.steps{grid-template-columns:1fr}
+    .explorer{grid-template-columns:1fr;padding:18px}
+    .layers{flex-direction:row;flex-wrap:wrap}
+    .layer-btn{width:calc(50% - 5px)}
+    .stage{min-height:340px}
+    .mbar{display:block}
+    header.top .btn{display:none}
+    section{padding:52px 0}
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <div class="wrap">
+    <div class="brand"><span class="brand-dot" aria-hidden="true"></span>DD Anatomy Lab</div>
+    <a class="btn btn-primary" href="https://mjuem.gumroad.com" target="_blank" rel="noopener">Get free access</a>
+  </div>
+</header>
+
+<main id="main">
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">Virtual lab · Opens in your browser</span>
+        <h1 id="hero-title" class="serif">Explore the body. <em>Reveal the layers.</em></h1>
+        <p class="lede">Flat textbook diagrams make anatomy hard to picture. Step inside a hands-on virtual lab and see how the body fits together, one layer at a time.</p>
+        <div class="price-row">
+          <a class="btn btn-primary" href="https://mjuem.gumroad.com" target="_blank" rel="noopener">Open the lab — free →</a>
+          <span class="price-tag">Price: <strong>$0</strong></span>
+        </div>
+        <ul class="trust">
+          <li>No software to install</li>
+          <li>Bookmark for anytime access</li>
+          <li>Works on laptop, tablet &amp; phone</li>
+        </ul>
+      </div>
+      <div class="cover">
+        <div class="cover-fallback" aria-hidden="true">
+          <span class="cf-grid"></span>
+          <span class="cf-ring r1"></span><span class="cf-ring r2"></span><span class="cf-ring r3"></span>
+          <span class="cf-kicker">DD Anatomy Lab</span>
+          <span class="cf-title">Anatomy<br>Virtual Lab</span>
+          <span class="cf-sub">Skin · Muscle · Organs · Skeleton</span>
+        </div>
+        <img id="cover-img" src="https://public-files.gumroad.com/2j6qr474d4spldq9xek0vr0rg73a" alt="Anatomy Virtual Laboratory product cover" width="1200" height="900" loading="eager">
+        <span class="badge">Anatomy Virtual Laboratory</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAIN POINTS -->
+  <section aria-labelledby="pain-title">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Why it's hard</span>
+        <h2 id="pain-title" class="serif">Anatomy is 3D. Most study tools aren't.</h2>
+      </div>
+      <div class="pains">
+        <article class="pain reveal"><div class="ic" aria-hidden="true">📖</div><h3>Diagrams feel flat</h3><p>Memorizing labels on a page doesn't show how systems sit on top of each other.</p></article>
+        <article class="pain reveal"><div class="ic" aria-hidden="true">🔬</div><h3>Labs aren't always open</h3><p>Real lab time and models are limited — especially for homeschool and remote learners.</p></article>
+        <article class="pain reveal"><div class="ic" aria-hidden="true">🧠</div><h3>It doesn't stick</h3><p>Without seeing and exploring, terms blur together right before the test.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE TEASER -->
+  <section aria-labelledby="try-title">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Try the idea</span>
+        <h2 id="try-title" class="serif">Peel back the layers.</h2>
+        <p>A tiny taste of layered learning. Tap a layer to show or hide it — the full lab goes much deeper.</p>
+      </div>
+      <div class="explorer reveal">
+        <div>
+          <div class="layers" role="group" aria-label="Body layers">
+            <button class="layer-btn" type="button" data-layer="skin" aria-pressed="true"><span class="sw sw-skin"></span><span>Skin<small>Outer covering</small></span></button>
+            <button class="layer-btn" type="button" data-layer="muscle" aria-pressed="true"><span class="sw sw-muscle"></span><span>Muscles<small>Movement &amp; strength</small></span></button>
+            <button class="layer-btn" type="button" data-layer="organs" aria-pressed="true"><span class="sw sw-organ"></span><span>Organs<small>Heart, lungs &amp; more</small></span></button>
+            <button class="layer-btn" type="button" data-layer="skeleton" aria-pressed="true"><span class="sw sw-bone"></span><span>Skeleton<small>The framework</small></span></button>
+          </div>
+          <p class="live" id="live" aria-live="polite"></p>
+        </div>
+        <div class="stage">
+          <div class="figure" role="img" aria-label="Simplified layered human figure illustration">
+            <img class="lyr" data-g="skeleton" src="data:image/svg+xml;charset=utf-8,%3Csvg%20viewBox%3D%220%200%20200%20400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22%23d8c9a6%22%20stroke-width%3D%225%22%20stroke-linecap%3D%22round%22%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%2242%22%20r%3D%2222%22%20fill%3D%22%23e9dfc8%22%20stroke%3D%22none%22%2F%3E%3Cline%20x1%3D%22100%22%20y1%3D%2266%22%20x2%3D%22100%22%20y2%3D%22200%22%2F%3E%3Cpath%20d%3D%22M70%20100%20Q100%2092%20130%20100%20M68%20116%20Q100%20108%20132%20116%20M70%20132%20Q100%20124%20130%20132%20M74%20148%20Q100%20140%20126%20148%22%2F%3E%3Cpath%20d%3D%22M62%2086%20L138%2086%22%2F%3E%3Cpath%20d%3D%22M62%2086%20L48%20160%20L40%20228%20M138%2086%20L152%20160%20L160%20228%22%2F%3E%3Cpath%20d%3D%22M76%20198%20Q100%20216%20124%20198%22%2F%3E%3Cpath%20d%3D%22M84%20206%20L80%20300%20L78%20380%20M116%20206%20L120%20300%20L122%20380%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="" width="200" height="400">
+            <img class="lyr" data-g="organs" src="data:image/svg+xml;charset=utf-8,%3Csvg%20viewBox%3D%220%200%20200%20400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%3E%3Cellipse%20cx%3D%2284%22%20cy%3D%22116%22%20rx%3D%2215%22%20ry%3D%2226%22%20fill%3D%22%23d9776b%22%20opacity%3D%22.85%22%2F%3E%3Cellipse%20cx%3D%22116%22%20cy%3D%22116%22%20rx%3D%2215%22%20ry%3D%2226%22%20fill%3D%22%23d9776b%22%20opacity%3D%22.85%22%2F%3E%3Cpath%20d%3D%22M100%20112%20c-8-10-22-2-14%2010%20l14%2014%20l14-14%20c8-12-6-20-14-10z%22%20fill%3D%22%23c8374a%22%2F%3E%3Cpath%20d%3D%22M80%20152%20q20%20-10%2040%200%20q-4%2020%20-20%2022%20q-16%20-2%20-20%20-22z%22%20fill%3D%22%239a5a3c%22%20opacity%3D%22.85%22%2F%3E%3Cpath%20d%3D%22M84%20178%20q16%208%2032%200%20q4%2016%20-16%2022%20q-20%20-6%20-16%20-22z%22%20fill%3D%22%23d9776b%22%20opacity%3D%22.7%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="" width="200" height="400">
+            <img class="lyr" data-g="muscle" src="data:image/svg+xml;charset=utf-8,%3Csvg%20viewBox%3D%220%200%20200%20400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22%23b8424f%22%20opacity%3D%22.78%22%3E%3Cpath%20d%3D%22M66%2084%20Q100%2074%20134%2084%20L128%20150%20Q100%20160%2072%20150%20Z%22%2F%3E%3Cpath%20d%3D%22M62%2086%20Q50%2096%2048%20160%20L56%20162%20Q62%20120%2072%20100Z%20M138%2086%20Q150%2096%20152%20160%20L144%20162%20Q138%20120%20128%20100Z%22%2F%3E%3Cpath%20d%3D%22M76%20200%20Q80%20260%2082%20300%20L94%20300%20Q96%20250%2098%20206Z%20M124%20200%20Q120%20260%20118%20300%20L106%20300%20Q104%20250%20102%20206Z%22%2F%3E%3Cpath%20d%3D%22M80%20300%20L78%20376%20L88%20376%20L92%20300Z%20M120%20300%20L122%20376%20L112%20376%20L108%20300Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="" width="200" height="400">
+            <img class="lyr" data-g="skin" src="data:image/svg+xml;charset=utf-8,%3Csvg%20viewBox%3D%220%200%20200%20400%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22%23e8b796%22%20opacity%3D%22.55%22%20stroke%3D%22%23e8b796%22%20stroke-width%3D%222%22%3E%3Ccircle%20cx%3D%22100%22%20cy%3D%2242%22%20r%3D%2226%22%2F%3E%3Cpath%20d%3D%22M88%2066%20h24%20v12%20h22%20q12%204%2018%2020%20l12%2070%20l-2%2064%20h-12%20l-6-60%20l-10-40%20v48%20q4%206%204%2022%20l-6%20110%20h-22%20l-8-120%20l-8%20120%20h-22%20l-6-110%20q0-16%204-22%20v-48%20l-10%2040%20l-6%2060%20h-12%20l-2-64%20l12-70%20q6-16%2018-20%20h22z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E" alt="" width="200" height="400">
+          </div>
+          <span class="stage-note">Illustration only</span>
+        </div>
+      </div>
+      <p class="center-cta"><a class="btn btn-primary" href="https://mjuem.gumroad.com" target="_blank" rel="noopener">Explore the full lab →</a></p>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">How it works</span>
+        <h2 id="how-title" class="serif">From click to cadaver-free lab in a minute.</h2>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><h3>Claim it free</h3><p>Tap the button and complete the quick $0 checkout.</p></div>
+        <div class="step reveal"><h3>Launch the lab</h3><p>Open the DD Anatomy Lab right in your browser — nothing to download.</p></div>
+        <div class="step reveal"><h3>Bookmark &amp; return</h3><p>Save the link and come back anytime to review before quizzes and exams.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHO -->
+  <section aria-labelledby="who-title">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Made for</span>
+        <h2 id="who-title" class="serif">Curious minds at every level.</h2>
+      </div>
+      <div class="who reveal">
+        <span class="chip">🎒 Middle &amp; high school students</span>
+        <span class="chip">🏡 Homeschool families</span>
+        <span class="chip">🍎 Science teachers</span>
+        <span class="chip">🩺 Nursing &amp; pre-health learners</span>
+        <span class="chip">💡 Lifelong learners</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- DESCRIPTION -->
+  <section aria-labelledby="desc-title">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Inside</span>
+        <h2 id="desc-title" class="serif">What you're getting</h2>
+      </div>
+      <div class="desc reveal">
+        <div>Click below to open the lab in your browser. Bookmark it for anytime access. Explore the body and reveal the layers.</div>
+        <div class="rating"><span class="stars" aria-hidden="true">★★★★★</span><span>Be the first to review · New lab</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section aria-labelledby="faq-title">
+    <div class="wrap wrap-narrow">
+      <div class="sec-head reveal">
+        <span class="eyebrow">Questions</span>
+        <h2 id="faq-title" class="serif">Good to know</h2>
+      </div>
+      <details><summary>Is it really free?</summary><p>Yes. Checkout is $0 — you'll just enter an email so Gumroad can send your access link.</p></details>
+      <details><summary>Do I need to install anything?</summary><p>No. The lab opens in your web browser on a computer, tablet, or phone.</p></details>
+      <details><summary>How do I get back to it later?</summary><p>Bookmark the lab link, and your Gumroad receipt email and library always keep it handy.</p></details>
+      <details><summary>Can I use it with my class?</summary><p>Absolutely — share this page so each student can grab their own free access.</p></details>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section aria-labelledby="final-title">
+    <div class="wrap">
+      <div class="final reveal">
+        <h2 id="final-title" class="serif">Ready to see what's under the surface?</h2>
+        <p>Free access, instant launch, and a lab that's open whenever you are.</p>
+        <a class="btn btn-primary" href="https://mjuem.gumroad.com" target="_blank" rel="noopener">Get the lab free →</a>
+        <div class="support">
+          <label for="gr-price">Want to support more free learning tools? Name a tip:</label>
+          <input id="gr-price" type="number" min="0" step="0.01" placeholder="5.00" inputmode="decimal">
+          <button id="gr-buy" class="btn" type="button">Support &amp; get access</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">© MJUnlimited Essential Marketing · <a href="https://mjuem.gumroad.com">More from our store</a></div>
+</footer>
+
+<div class="mbar" id="mbar"><a class="btn btn-primary" href="https://mjuem.gumroad.com" target="_blank" rel="noopener">Open the lab — free</a></div>
+
+<script>
+(function(){
+  // Layer toggles
+  var names={skin:"Skin",muscle:"Muscles",organs:"Organs",skeleton:"Skeleton"};
+  var live=document.getElementById("live");
+  document.querySelectorAll(".layer-btn").forEach(function(b){
+    b.addEventListener("click",function(){
+      var on=b.getAttribute("aria-pressed")!=="true";
+      b.setAttribute("aria-pressed",on?"true":"false");
+      var g=document.querySelector('[data-g="'+b.dataset.layer+'"]');
+      if(g) g.classList.toggle("off",!on);
+      if(live) live.textContent=names[b.dataset.layer]+(on?" layer shown.":" layer hidden.");
+    });
+  });
+
+  // Cover image fallback
+  var ci=document.getElementById("cover-img");
+  if(ci){ var hide=function(){ci.classList.add("broken");};
+    ci.addEventListener("error",hide);
+    if(ci.complete && ci.naturalWidth===0) hide(); }
+
+  // Tip / pay-what-you-want checkout
+  var buy=document.getElementById("gr-buy");
+  if(buy) buy.addEventListener("click",function(){
+    var v=(document.getElementById("gr-price").value||"").trim(),url="https://mjuem.gumroad.com";
+    if(v!==""){ var n=parseFloat(v); if(!isNaN(n)&&n>=0) url=url+"?price="+encodeURIComponent(String(n)); }
+    window.open(url,"_blank","noopener");
+  });
+
+  // Scroll reveal
+  var els=document.querySelectorAll(".reveal");
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{threshold:.12});
+    els.forEach(function(el){io.observe(el);});
+  } else { els.forEach(function(el){el.classList.add("in");}); }
+
+  // Sticky mobile CTA after hero
+  var bar=document.getElementById("mbar"),hero=document.querySelector(".hero");
+  if(bar&&hero&&"IntersectionObserver" in window){
+    new IntersectionObserver(function(es){bar.classList.toggle("show",!es[0].isIntersecting);}).observe(hero);
+  }
+})();
+</script>
+</body>
+</html>
